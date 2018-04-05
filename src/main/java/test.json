@@ -1,0 +1,61 @@
+{
+  "session": {
+    "lifetime": "600",
+    "sid": "I000057UBLfLIDnKExMNOraIxwei8:"
+  },
+  "httpStatus": 200,
+  "response": {
+    "user_context": "PRIVATE",
+    "liabilities": {
+      "total_balance": [
+        {
+          "currency": "PLN",
+          "value": -200.53
+        }
+      ],
+      "products": [
+        {
+          "balance": {
+            "currency": "PLN",
+            "value": -200.53
+          },
+          "name": "credit1"
+        }
+      ]
+    },
+    "savings": {
+      "total_balance": [
+        {
+          "currency": "PLN",
+          "value": 1.68
+        }
+      ],
+      "products": [
+        {
+          "balance": {
+            "currency": "PLN",
+            "value": 1.68
+          },
+          "name": "account1"
+        },
+        {
+          "balance": {
+            "currency": "PLN",
+            "value": 0.0
+          },
+          "name": "account2"
+        }
+      ]
+    },
+    "formats": [
+      {
+        "id": "pdf",
+        "title": "PDF"
+      },
+      {
+        "id": "xls",
+        "title": "XLS"
+      }
+    ]
+  }
+}
