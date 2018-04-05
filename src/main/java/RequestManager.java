@@ -4,6 +4,10 @@ import org.json.JSONObject;
 
 import java.net.URL;
 
+/**
+ * Prepares request used by {@link Authenticator} class.
+ */
+
 class RequestManager {
     static WebRequest prepareLoginRequest(final URL url, final String id) {
         final WebRequest request = new WebRequest(url, HttpMethod.POST);

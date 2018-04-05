@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+/**
+ * This class is used to log into pko bank and download account info.
+ **/
+
 class Authenticator {
     private static final String MAIN_WEBSITE = "https://www.ipko.pl/";
     private final WebClient client;

@@ -5,6 +5,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Json parser used by {@link Authenticator}.
+ */
+
 class JsonParser {
     static String getSessionId(final Page page) {
         final String response = page.getWebResponse().getContentAsString();
