@@ -104,7 +104,6 @@ public class JsonParserTest {
         json.put("id", "test");
         json.put("response", serverResponse);
 
-
         given(response.getContentAsString()).willReturn(json.toString());
 
         // when
