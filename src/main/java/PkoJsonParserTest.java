@@ -19,13 +19,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 
-public class JsonParserTest {
+public class PkoJsonParserTest {
 
     @Mock
     private Page page;
 
     @Mock
     private WebResponse response;
+
+    private PkoJsonParser parser = new PkoJsonParser();
 
     @Before
     public void setUp() {
@@ -36,19 +38,19 @@ public class JsonParserTest {
     @Test
     public void shouldGetSessionId() {
         // given
-        final String sessionId = "101";
+        String sessionId = "101";
 
-        final JSONObject sid = new JSONObject();
+        JSONObject sid = new JSONObject();
         sid.put("sid", sessionId);
 
-        final JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject();
         json.put("id", "test");
         json.put("session", sid);
 
         given(response.getContentAsString()).willReturn(json.toString());
 
         // when
-        final String resultSessionId = JsonParser.getSessionId(page);
+        String resultSessionId = parser.getSessionId(page);
 
         // then
         assertThat(resultSessionId).isEqualTo(sessionId);
@@ -57,16 +59,16 @@ public class JsonParserTest {
     @Test
     public void shouldNotGetSessionId() {
         // given
-        final JSONObject sid = new JSONObject();
+        JSONObject sid = new JSONObject();
 
-        final JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject();
         json.put("id", "test");
         json.put("session", sid);
 
         given(response.getContentAsString()).willReturn(json.toString());
 
         // when
-        final Throwable thrown = catchThrowable(() -> JsonParser.getSessionId(page));
+        Throwable thrown = catchThrowable(() -> parser.getSessionId(page));
 
         // then
         assertThat(thrown)
@@ -77,19 +79,19 @@ public class JsonParserTest {
     @Test
     public void shouldGetFlowId() {
         // given
-        final String flowId = "101";
+        String flowId = "101";
 
-        final JSONObject sid = new JSONObject();
+        JSONObject sid = new JSONObject();
         sid.put("flow_id", flowId);
 
-        final JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject();
         json.put("id", "test");
         json.put("response", sid);
 
         given(response.getContentAsString()).willReturn(json.toString());
 
         // when
-        final String resultFlowId = JsonParser.getFlowId(page);
+        String resultFlowId = parser.getFlowId(page);
 
         // then
         assertThat(resultFlowId).isEqualTo(flowId);
@@ -98,16 +100,16 @@ public class JsonParserTest {
     @Test
     public void shouldNotGetFlowId() {
         // given
-        final JSONObject serverResponse = new JSONObject();
+        JSONObject serverResponse = new JSONObject();
 
-        final JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject();
         json.put("id", "test");
         json.put("response", serverResponse);
 
         given(response.getContentAsString()).willReturn(json.toString());
 
         // when
-        final Throwable thrown = catchThrowable(() -> JsonParser.getFlowId(page));
+        Throwable thrown = catchThrowable(() -> parser.getFlowId(page));
 
         // then
         assertThat(thrown)
@@ -118,18 +120,18 @@ public class JsonParserTest {
     @Test
     public void shouldParseBalances() throws ParseException, IOException {
         // given
-        final JSONParser jsonParser = new JSONParser();
-        final Object object = jsonParser.parse(new FileReader("src/main/java/test.json"));
+        JSONParser jsonParser = new JSONParser();
+        Object object = jsonParser.parse(new FileReader("src/main/java/test.json"));
 
         given(response.getContentAsString()).willReturn(object.toString());
 
-        final Map<String, Double> expectedAccounts = new HashMap<>();
+        Map<String, Double> expectedAccounts = new HashMap<>();
         expectedAccounts.put("credit1", -200.53);
         expectedAccounts.put("account1", 1.68);
         expectedAccounts.put("account2", 0.0);
 
         // when
-        final Map<String, Double> resultAccounts = JsonParser.parseBalances(page);
+        Map<String, Double> resultAccounts = parser.parseBalances(page);
 
         // then
         assertThat(resultAccounts).isEqualTo(expectedAccounts);

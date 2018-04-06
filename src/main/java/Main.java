@@ -1,5 +1,3 @@
-import com.gargoylesoftware.htmlunit.WebClient;
-
 import java.io.IOException;
 
 /**
@@ -8,17 +6,13 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        final WebClient client = new WebClient();
-        client.getOptions().setCssEnabled(false);
-        client.getOptions().setJavaScriptEnabled(false);
-        client.getCookieManager().setCookiesEnabled(true);
+        String id = "INSERT_YOUR_ID_HERE";
+        String password = "INSERT_YOU_PASSWORD_HERE";
 
-        final String id = "INSERT_YOUR_ID_HERE";
-        final String password = "INSERT_YOU_PASSWORD_HERE";
-
-        final Authenticator authenticator = new Authenticator(client, id, password);
+        PkoWebScraper pkoWebScraper = new PkoWebScraper(id, password);
         try {
-            System.out.println(authenticator.getAccounts());
+            String sessionId = pkoWebScraper.signIn();
+            System.out.println(pkoWebScraper.getAccounts(sessionId));
         } catch (IOException e) {
             System.out.println("Could not get accounts list: " + e.getMessage());
         }
