@@ -31,9 +31,8 @@ public class PkoJsonRequestResponseParser {
         JSONObject serverResponse = new JSONObject(response);
         JSONObject accountData = serverResponse.getJSONObject("response");
         JSONArray accountsToParse = accountData.getJSONArray("account_list");
-        List<PkoAccount> accounts = parseAccounts(accountsToParse);
 
-        return accounts;
+        return parseAccounts(accountsToParse);
     }
 
     private List<PkoAccount> parseAccounts(JSONArray products) {
