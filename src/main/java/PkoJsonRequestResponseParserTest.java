@@ -2,6 +2,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,16 +11,14 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.simple.parser.JSONParser;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 
-public class PkoJsonParserTest {
+public class PkoJsonRequestResponseParserTest {
 
     @Mock
     private Page page;
@@ -27,7 +26,7 @@ public class PkoJsonParserTest {
     @Mock
     private WebResponse response;
 
-    private PkoJsonParser parser = new PkoJsonParser();
+    private PkoJsonRequestResponseParser parser = new PkoJsonRequestResponseParser();
 
     @Before
     public void setUp() {
@@ -125,13 +124,27 @@ public class PkoJsonParserTest {
 
         given(response.getContentAsString()).willReturn(object.toString());
 
-        Map<String, Double> expectedAccounts = new HashMap<>();
-        expectedAccounts.put("credit1", -200.53);
-        expectedAccounts.put("account1", 1.68);
-        expectedAccounts.put("account2", 0.0);
+        List<PkoAccount> expectedAccounts = new ArrayList<>();
+
+        PkoAccount account1 = new PkoAccount(
+                "PKO KONTO DLA M\u0141ODYCH",
+                "123456789",
+                19.68,
+                "PLN"
+        );
+
+       PkoAccount account2 = new PkoAccount(
+         "Second test account",
+         "987654321",
+         1.27,
+         "EU"
+       );
+
+        expectedAccounts.add(account1);
+        expectedAccounts.add(account2);
 
         // when
-        Map<String, Double> resultAccounts = parser.parseBalances(page);
+        List<PkoAccount> resultAccounts = parser.getAccounts(page);
 
         // then
         assertThat(resultAccounts).isEqualTo(expectedAccounts);

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
+import java.util.List;
 
 /**
  * This class is used to log into pko bank and download account info.
@@ -15,7 +15,7 @@ import java.util.Map;
 public class PkoWebScraper {
     private static String BASE_URL = "https://www.ipko.pl/";
     private WebClient client = new WebClient();
-    private PkoJsonParser parser = new PkoJsonParser();
+    private PkoJsonRequestResponseParser parser = new PkoJsonRequestResponseParser();
 
     private String id;
     private String password;
@@ -29,9 +29,9 @@ public class PkoWebScraper {
         this.client.getCookieManager().setCookiesEnabled(true);
     }
 
-    public Map<String, Double> getAccounts(String sessionId) throws IOException {
-        Page balancePage = getBalancePage(sessionId);
-        return parser.parseBalances(balancePage);
+    public List<PkoAccount> getAccounts(String sessionId) throws IOException {
+        Page accountsPage = getAccountsPage(sessionId);
+        return parser.getAccounts(accountsPage);
     }
 
     public String signIn() throws IOException {
@@ -67,9 +67,9 @@ public class PkoWebScraper {
         client.getPage(request);
     }
 
-    private Page getBalancePage(String sessionId) throws IOException {
-        URL url = new URL(BASE_URL + "/secure/ikd3/api/home/balance");
-        WebRequest request = prepareGetBalanceRequest(url, sessionId);
+    private Page getAccountsPage(String sessionId) throws IOException {
+        URL url = new URL(BASE_URL + "/secure/ikd3/api/accounts/init");
+        WebRequest request = prepareGetAccountsRequest(url, sessionId);
 
         return client.getPage(request);
     }
@@ -152,7 +152,7 @@ public class PkoWebScraper {
         return request;
     }
 
-    private WebRequest prepareGetBalanceRequest(URL url, String sessionId) {
+    private WebRequest prepareGetAccountsRequest(URL url, String sessionId) {
         WebRequest request = new WebRequest(url, HttpMethod.POST);
         request.setAdditionalHeader("Content-Type", "application/json");
         request.setAdditionalHeader("x-ias-ias_sid", sessionId);

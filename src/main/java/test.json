@@ -1,61 +1,136 @@
 {
   "session": {
     "lifetime": "600",
-    "sid": "I000057UBLfLIDnKExMNOraIxwei8:"
+    "sid": "testId:"
   },
   "httpStatus": 200,
   "response": {
-    "user_context": "PRIVATE",
-    "liabilities": {
-      "total_balance": [
-        {
-          "currency": "PLN",
-          "value": -200.53
-        }
-      ],
-      "products": [
-        {
-          "balance": {
-            "currency": "PLN",
-            "value": -200.53
-          },
-          "name": "credit1"
-        }
-      ]
-    },
-    "savings": {
-      "total_balance": [
-        {
-          "currency": "PLN",
-          "value": 1.68
-        }
-      ],
-      "products": [
-        {
-          "balance": {
-            "currency": "PLN",
-            "value": 1.68
-          },
-          "name": "account1"
-        },
-        {
-          "balance": {
-            "currency": "PLN",
-            "value": 0.0
-          },
-          "name": "account2"
-        }
-      ]
-    },
-    "formats": [
+    "remove_new_offer": false,
+    "ghost_offers": [
       {
-        "id": "pdf",
-        "title": "PDF"
+        "offer_description": "Twoje pieni\u0105dze na Ciebie pracuj\u0105, a Ty wp\u0142acasz i wyp\u0142acasz kiedy chcesz.",
+        "title": "KONTO OSZCZ\u0118DNO\u015aCIOWE",
+        "button_text": "Otw\u00f3rz konto",
+        "offer_href": "accounts/savings/create",
+        "offer_title": "KONTO OSZCZ\u0118DNO\u015aCIOWE PLUS",
+        "action": "ADD_RO",
+        "subtitle": "Otw\u00f3rz konto",
+        "offer_image": "imgage.png",
+        "age_group": "adult"
+      }
+    ],
+    "account_offers": [
+      {
+        "text": "Rachunek oszcz\u0119dno\u015bciowo-rozliczeniowy",
+        "href": "#personal/new-ror-individual",
+        "id": "new-ror-individual"
+      }
+    ],
+    "actions": {
+      "can_open_subsidiary_account": false,
+      "can_open_savings_account": true
+    },
+    "account_list": [
+      {
+        "extended": {
+          "balance": {
+            "avail": {
+              "currency": "PLN",
+              "value": 19.68
+            },
+            "ledger": {
+              "currency": "PLN",
+              "value": 19.68
+            }
+          },
+          "limit": {
+            "credit_type": null,
+            "overdraft": null,
+            "can_change_credit_limit": false,
+            "credit": null
+          },
+          "holds": {
+            "currency": "PLN",
+            "value": -0.00
+          }
+        },
+        "number": {
+          "value": "123456789",
+          "format": "NRB"
+        },
+        "currency": "PLN",
+        "show_only_completed": false,
+        "product_code": "1331",
+        "show_new_banktam_agreement": true,
+        "show_unsettled": true,
+        "title": "PKO KONTO DLA M\u0141ODYCH",
+        "is_owner": true,
+        "id": "testId",
+        "show_notifications": true,
+        "show_shortcuts_box": true,
+        "limit": null,
+        "is_plenipotentiary_in_owner_rank": false,
+        "owner_type": "PRIVATE",
+        "balance": {
+          "currency": "PLN",
+          "value": 19.68
+        },
+        "active_company": true
       },
       {
-        "id": "xls",
-        "title": "XLS"
+        "extended": {
+          "balance": {
+            "avail": {
+              "currency": "EU",
+              "value": 1.27
+            },
+            "ledger": {
+              "currency": "EU",
+              "value": 1.27
+            }
+          },
+          "limit": {
+            "credit_type": null,
+            "overdraft": null,
+            "can_change_credit_limit": false,
+            "credit": null
+          },
+          "holds": {
+            "currency": "PLN",
+            "value": -0.00
+          }
+        },
+        "number": {
+          "value": "987654321",
+          "format": "NRB"
+        },
+        "currency": "EU",
+        "show_only_completed": false,
+        "product_code": "1331",
+        "show_new_banktam_agreement": true,
+        "show_unsettled": true,
+        "title": "Second test account",
+        "is_owner": true,
+        "id": "testId2",
+        "show_notifications": true,
+        "show_shortcuts_box": true,
+        "limit": null,
+        "is_plenipotentiary_in_owner_rank": false,
+        "owner_type": "PRIVATE",
+        "balance": {
+          "currency": "EU",
+          "value": 1.27
+        },
+        "active_company": true
       }
-    ]
+    ],
+    "zxc_offers": {
+      "places": [
+        {
+          "items": [],
+          "place_id": "IPKO-MENU2-ACC-BANER1X1-COMMON"
+        }
+      ]
+    }
   }
 }
