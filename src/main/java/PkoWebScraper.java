@@ -81,7 +81,7 @@ public class PkoWebScraper {
         WebRequest request = preparePasswordRequest(url, sessionId, flowId);
         Page page = client.getPage(request);
         if (page.getWebResponse().getContentAsString().contains("Niepoprawne logowanie")) {
-            throw new FailedLoginException("Wrong password");
+            throw new FailedLoginException("Please check your password");
         }
     }
 
