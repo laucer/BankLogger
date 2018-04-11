@@ -4,9 +4,10 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import org.json.JSONObject;
 
+import javax.security.auth.login.FailedLoginException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * This class is used to log into pko bank and download account info.
@@ -15,7 +16,8 @@ import java.util.List;
 public class PkoWebScraper {
     private static String BASE_URL = "https://www.ipko.pl/";
     private WebClient client = new WebClient();
-    private PkoJsonRequestResponseParser parser = new PkoJsonRequestResponseParser();
+    private PkoLoginResponseJsonParser loginResponseJsonParser = new PkoLoginResponseJsonParser();
+    private PkoGetAccountResponseJsonParser getAccountResponseJsonParser = new PkoGetAccountResponseJsonParser();
 
     private String id;
     private String password;
@@ -29,16 +31,11 @@ public class PkoWebScraper {
         this.client.getCookieManager().setCookiesEnabled(true);
     }
 
-    public List<PkoAccount> getAccounts(String sessionId) throws IOException {
-        Page accountsPage = getAccountsPage(sessionId);
-        return parser.getAccounts(accountsPage);
-    }
-
-    public String signIn() throws IOException {
+    public String signIn() throws IOException, FailedLoginException {
         Page passwordPage = sendLogin();
-
-        String sessionId = parser.getSessionId(passwordPage);
-        String flowId = parser.getFlowId(passwordPage);
+        String content = passwordPage.getWebResponse().getContentAsString();
+        String sessionId = loginResponseJsonParser.getSessionId(content);
+        String flowId = loginResponseJsonParser.getFlowId(content);
 
         sendPassword(sessionId, flowId);
         continueAuthentication(sessionId, flowId);
@@ -46,32 +43,16 @@ public class PkoWebScraper {
         return sessionId;
     }
 
-    private Page sendLogin() throws IOException {
+    private Page sendLogin() throws IOException, FailedLoginException {
         URL url = new URL(BASE_URL + "/secure/ikd3/api/login");
         WebRequest request = prepareLoginRequest(url);
+        Page page = client.getPage(request);
 
-        return client.getPage(request);
-    }
+        if (page.getWebResponse().getContentAsString().contains("Niepoprawny format numeru klienta lub loginu")) {
+            throw new FailedLoginException("Wrong client id");
+        }
 
-    private void sendPassword(String sessionId, String flowId) throws IOException {
-        URL url = new URL(BASE_URL + "/secure/ikd3/api/login");
-        WebRequest request = preparePasswordRequest(url, sessionId, flowId);
-
-        client.getPage(request);
-    }
-
-    private void continueAuthentication(String sessionId, String flowId) throws IOException {
-        URL url = new URL(BASE_URL + "/secure/ikd3/api/login");
-        WebRequest request = prepareLastAuthenticationRequest(url, sessionId, flowId);
-
-        client.getPage(request);
-    }
-
-    private Page getAccountsPage(String sessionId) throws IOException {
-        URL url = new URL(BASE_URL + "/secure/ikd3/api/accounts/init");
-        WebRequest request = prepareGetAccountsRequest(url, sessionId);
-
-        return client.getPage(request);
+        return page;
     }
 
     private WebRequest prepareLoginRequest(URL url) {
@@ -93,6 +74,15 @@ public class PkoWebScraper {
         request.setRequestBody(body.toString());
 
         return request;
+    }
+
+    private void sendPassword(String sessionId, String flowId) throws IOException, FailedLoginException {
+        URL url = new URL(BASE_URL + "/secure/ikd3/api/login");
+        WebRequest request = preparePasswordRequest(url, sessionId, flowId);
+        Page page = client.getPage(request);
+        if (page.getWebResponse().getContentAsString().contains("Niepoprawne logowanie")) {
+            throw new FailedLoginException("Wrong password");
+        }
     }
 
     private WebRequest preparePasswordRequest(URL url, String sessionId, String flowId) {
@@ -124,6 +114,12 @@ public class PkoWebScraper {
         return request;
     }
 
+    private void continueAuthentication(String sessionId, String flowId) throws IOException {
+        URL url = new URL(BASE_URL + "/secure/ikd3/api/login");
+        WebRequest request = prepareLastAuthenticationRequest(url, sessionId, flowId);
+        client.getPage(request);
+    }
+
     private WebRequest prepareLastAuthenticationRequest(URL url, String sessionId, String flowId) {
         WebRequest request = new WebRequest(url, HttpMethod.POST);
         request.setAdditionalHeader("Content-Type", "application/json");
@@ -152,6 +148,18 @@ public class PkoWebScraper {
         return request;
     }
 
+    public Collection<BankAccount> getAccounts(String sessionId) throws IOException {
+        Page accountsPage = getAccountsPage(sessionId);
+        String content = accountsPage.getWebResponse().getContentAsString();
+        return getAccountResponseJsonParser.getAccounts(content);
+    }
+
+    private Page getAccountsPage(String sessionId) throws IOException {
+        URL url = new URL(BASE_URL + "/secure/ikd3/api/accounts/init");
+        WebRequest request = prepareGetAccountsRequest(url, sessionId);
+        return client.getPage(request);
+    }
+
     private WebRequest prepareGetAccountsRequest(URL url, String sessionId) {
         WebRequest request = new WebRequest(url, HttpMethod.POST);
         request.setAdditionalHeader("Content-Type", "application/json");
@@ -166,7 +174,6 @@ public class PkoWebScraper {
         body.put("sid", sessionId);
 
         request.setRequestBody(body.toString());
-
         return request;
     }
 }
